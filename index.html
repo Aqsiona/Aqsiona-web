@@ -1450,7 +1450,8 @@ AQ.set(AQ.lang,false);
   document.getElementById('modalOverlay').addEventListener('click', (e) => {
     if(e.target.id === 'modalOverlay') closeModal();
   });
-  const FORM_TO = {contact: 'info@aqsiona.com', newsletter: 'newsletter@aqsiona.com'};
+  const FORM_TO = 'aqsiona@gmail.com';
+  const CONTACT_MAIL = 'info@aqsiona.com';
   function sendForm(to, data){
     return fetch('https://formsubmit.co/ajax/' + to, {
       method: 'POST',
@@ -1471,7 +1472,7 @@ AQ.set(AQ.lang,false);
     const topic = document.getElementById('modalTopic').value;
     btn.disabled = true;
     msg.textContent = en ? 'Sending…' : 'Enviando…';
-    sendForm(FORM_TO.contact, {
+    sendForm(FORM_TO, {
       _subject: 'Consulta desde la web — ' + topic,
       'Nombre': form.name.value,
       email: form.email.value,
@@ -1484,7 +1485,7 @@ AQ.set(AQ.lang,false);
       msg.textContent = en ? 'Thank you! We received your message and will get back to you shortly.' : '¡Gracias! Recibimos tu consulta y te contactamos a la brevedad.';
       setTimeout(function(){ closeModal(); msg.textContent = ''; }, 3500);
     }).catch(function(){
-      msg.textContent = en ? 'We could not send your message. Please try again or write to ' + FORM_TO.contact + '.' : 'No pudimos enviar tu consulta. Probá de nuevo o escribinos a ' + FORM_TO.contact + '.';
+      msg.textContent = en ? 'We could not send your message. Please try again or write to ' + CONTACT_MAIL + '.' : 'No pudimos enviar tu consulta. Probá de nuevo o escribinos a ' + CONTACT_MAIL + '.';
     }).finally(function(){ btn.disabled = false; });
   });
 
@@ -1504,7 +1505,7 @@ AQ.set(AQ.lang,false);
     }
     btn.disabled = true;
     msg.textContent = en ? 'Sending…' : 'Enviando…';
-    sendForm(FORM_TO.newsletter, {
+    sendForm(FORM_TO, {
       _subject: 'Suscripción al newsletter de Aqsiona',
       email: email,
       'Idioma de la web': en ? 'English' : 'Español'
