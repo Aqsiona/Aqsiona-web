@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Área de clientes · Aqsiona</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EDEAE4;--bg-2:#E3DFD7;--accent:#F2600A;--white:#F6F5F2;--black:#16171A;--muted:#5A5C60;
+    --line:rgba(17,18,20,0.12);
+    --display:'Space Grotesk','IBM Plex Sans',sans-serif;--sans:'IBM Plex Sans',-apple-system,Segoe UI,sans-serif;--mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:var(--sans);background:var(--bg);color:var(--black);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+  [hidden]{display:none!important;}
+  header{background:var(--black);color:var(--white);}
+  .bar{max-width:1100px;margin:0 auto;padding:0 32px;height:70px;display:flex;align-items:center;justify-content:space-between;}
+  .brand{text-decoration:none;display:flex;flex-direction:column;line-height:1.1;}
+  .brand .name{font-family:var(--display);font-size:20px;font-weight:700;}
+  .brand .tag{font-size:10.5px;color:var(--accent);letter-spacing:.04em;text-transform:uppercase;font-weight:600;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 18px;border-radius:6px;font:600 14px var(--sans);cursor:pointer;border:1.5px solid var(--accent);background:var(--accent);color:var(--black);text-decoration:none;}
+  .btn:hover{filter:brightness(1.07);}
+  .btn.ghost{background:transparent;color:var(--white);border-color:rgba(246,245,242,.5);}
+  .btn.ghost:hover{border-color:var(--accent);color:var(--accent);}
+  main{max-width:1100px;margin:0 auto;padding:56px 32px 80px;}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.08em;color:var(--accent);text-transform:uppercase;}
+  h1{font-family:var(--display);font-size:clamp(30px,4vw,44px);line-height:1.1;margin:10px 0 8px;letter-spacing:-.01em;}
+  .sub{color:var(--muted);font-size:16px;margin:0;}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:40px;}
+  .card{background:var(--white);border:1px solid var(--line);border-top:3px solid var(--accent);padding:26px 24px 28px;display:flex;flex-direction:column;}
+  .card h2{font-family:var(--display);font-size:20px;margin:0 0 8px;}
+  .card p{color:var(--muted);font-size:14.5px;margin:0 0 18px;flex:1;}
+  .pill{align-self:flex-start;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;background:var(--bg-2);padding:5px 10px;border-radius:999px;color:var(--muted);}
+  .card a.link{font-weight:600;color:var(--accent);text-decoration:none;}
+  .card a.link:hover{text-decoration:underline;}
+  @media (max-width:860px){.grid{grid-template-columns:1fr;}}
+  .panel{max-width:420px;margin:24px auto 0;background:var(--white);border:1px solid var(--line);padding:34px 32px;}
+  .panel label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px;}
+  .panel input{display:block;width:100%;padding:12px;margin:0 0 16px;border:1px solid var(--line);background:#fff;font:15px var(--sans);border-radius:4px;}
+  .panel input:focus{outline:2px solid var(--accent);outline-offset:0;}
+  .panel .btn{width:100%;}
+  .msg{min-height:1.3em;margin:14px 0 0;font-size:14px;color:var(--muted);text-align:center;}
+  .center{text-align:center;}
+  .loading{padding:80px 0;text-align:center;color:var(--muted);}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <a class="brand" href="/"><span class="name">Aqsiona</span><span class="tag">El cambio no espera</span></a>
+    <button class="btn ghost" id="logout" type="button" hidden>Cerrar sesión</button>
+  </div>
+</header>
+
+<main>
+  <div class="loading" id="vLoading">Cargando…</div>
+
+  <!-- Crear / cambiar contraseña (llega desde el mail) -->
+  <section id="vPassword" hidden>
+    <div class="center">
+      <div class="eyebrow">Área de clientes</div>
+      <h1>Elegí tu nueva contraseña</h1>
+      <p class="sub">Usá al menos 8 caracteres.</p>
+    </div>
+    <form class="panel" id="pwForm" novalidate>
+      <label for="pw1">Nueva contraseña</label>
+      <input id="pw1" type="password" autocomplete="new-password" minlength="8" required>
+      <label for="pw2">Repetir contraseña</label>
+      <input id="pw2" type="password" autocomplete="new-password" minlength="8" required>
+      <button class="btn" type="submit">Guardar contraseña</button>
+      <p class="msg" id="pwMsg" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <!-- Enlace vencido o inválido -->
+  <section id="vLinkError" class="center" hidden>
+    <div class="eyebrow">Área de clientes</div>
+    <h1>El enlace ya no es válido</h1>
+    <p class="sub">Puede haber vencido o ya se usó. Pedí uno nuevo desde "Recuperar contraseña".</p>
+    <p style="margin-top:26px"><a class="btn" href="/?login=1">Volver a ingresar</a></p>
+  </section>
+
+  <!-- Área de clientes -->
+  <section id="vArea" hidden>
+    <div class="eyebrow">Área de clientes</div>
+    <h1>Hola<span id="who"></span></h1>
+    <p class="sub">Este es tu espacio en Aqsiona. Acá vas a encontrar los informes, las series de datos y los servicios contratados.</p>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Informes</h2>
+        <p>Análisis exclusivos, escenarios y proyecciones para tu empresa.</p>
+        <span class="pill">Próximamente</span>
+      </div>
+      <div class="card">
+        <h2>Series de datos</h2>
+        <p>Series completas de los indicadores que seguimos, listas para descargar.</p>
+        <span class="pill">Próximamente</span>
+      </div>
+      <div class="card">
+        <h2>Tu consulta</h2>
+        <p>¿Necesitás un análisis a medida o tenés una pregunta? Escribinos y te respondemos a la brevedad.</p>
+        <a class="link" href="mailto:info@aqsiona.com?subject=Consulta%20desde%20el%20%C3%A1rea%20de%20clientes">Escribir a info@aqsiona.com →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="aqsiona-auth.js"></script>
+<script>
+(function(){
+  var views=['vLoading','vPassword','vLinkError','vArea'];
+  function show(id){views.forEach(function(v){document.getElementById(v).hidden=(v!==id);});
+    document.getElementById('logout').hidden=(id!=='vArea'&&id!=='vPassword');}
+  function area(s){
+    var e=s&&s.user&&s.user.email;
+    document.getElementById('who').textContent=e?', '+e:'';
+    show('vArea');
+  }
+  document.getElementById('logout').addEventListener('click',async function(){
+    await AQAuth.signOut(); location.href='/';
+  });
+  document.getElementById('pwForm').addEventListener('submit',async function(ev){
+    ev.preventDefault();
+    var a=document.getElementById('pw1').value,b=document.getElementById('pw2').value,m=document.getElementById('pwMsg');
+    if(a.length<8){m.textContent='La contraseña tiene que tener al menos 8 caracteres.';return;}
+    if(a!==b){m.textContent='Las contraseñas no coinciden.';return;}
+    m.textContent='Guardando…';
+    try{var s=await AQAuth.updatePassword(a);m.textContent='';area(s);}
+    catch(err){m.textContent=err.code==='no_session'?'Tu sesión venció. Pedí un nuevo enlace.':AQAuth.message(err,false);}
+  });
+  (async function(){
+    var link=null;
+    try{link=await AQAuth.fromLink();}catch(e){}
+    if(link&&link.error){show('vLinkError');return;}
+    var s=await AQAuth.session();
+    if(!s){location.replace('/?login=1');return;}
+    if(link&&(link.type==='recovery'||link.type==='invite')){show('vPassword');document.getElementById('pw1').focus();return;}
+    area(s);
+  })();
+})();
+</script>
+</body>
+</html>

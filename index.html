@@ -1780,6 +1780,7 @@ header.is-scrolled{box-shadow:0 8px 24px -16px rgba(11,11,13,0.45);background:rg
 })();
 </script>
 
+<script src="aqsiona-auth.js"></script>
 <div class="login-overlay" id="loginOverlay">
   <div class="login-box" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
     <button type="button" class="login-close" id="loginClose" aria-label="Cerrar" data-en-aria="Close">&times;</button>
@@ -1792,7 +1793,7 @@ header.is-scrolled{box-shadow:0 8px 24px -16px rgba(11,11,13,0.45);background:rg
       <button type="submit" class="login-submit"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M217.9 105.9 340.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9-18.7 0-33.9-15.2-33.9-33.9V320H32c-17.7 0-32-14.3-32-32v-64c0-17.7 14.3-32 32-32h128v-62.1c0-18.7 15.2-33.9 33.9-33.9 9 0 17.6 3.6 24 9.9zM352 416h64c17.7 0 32-14.3 32-32V128c0-17.7-14.3-32-32-32h-64c-17.7 0-32-14.3-32-32s14.3-32 32-32h64c53 0 96 43 96 96v256c0 53-43 96-96 96h-64c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg><span data-en="Log in">Ingresar</span></button>
       <p class="login-msg" id="loginMsg" aria-live="polite"></p>
     </form>
-    <a class="login-forgot" href="mailto:info@aqsiona.com?subject=Recuperar%20contrase%C3%B1a" data-en="Recover password">Recuperar contraseña</a>
+    <a class="login-forgot" href="#" id="loginForgot" data-en="Recover password">Recuperar contraseña</a>
   </div>
 </div>
 <script>
@@ -1805,13 +1806,37 @@ header.is-scrolled{box-shadow:0 8px 24px -16px rgba(11,11,13,0.45);background:rg
   document.getElementById('loginClose').addEventListener('click',close);
   ov.addEventListener('click',function(e){if(e.target===ov)close();});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov.classList.contains('open'))close();});
-  document.getElementById('loginForm').addEventListener('submit',function(e){
+  var busy=false;
+  document.getElementById('loginForm').addEventListener('submit',async function(e){
     e.preventDefault();
+    if(busy)return;
     var em=document.getElementById('loginEmail'),pw=document.getElementById('loginPass');
     if(!em.value||!em.checkValidity()||!pw.value){msg.textContent=en()?'Please enter a valid email and your password.':'Ingresá un email válido y tu contraseña.';return;}
-    /* Provisorio: el sitio es estático. Acá se conectará el servicio de cuentas. */
-    msg.textContent=en()?'The client area will be available soon.':'El área de clientes estará disponible próximamente.';
+    if(!window.AQAuth){msg.textContent=en()?'Something went wrong. Please try again.':'Algo salió mal. Probá de nuevo.';return;}
+    busy=true;msg.textContent=en()?'Signing in…':'Ingresando…';
+    try{await AQAuth.signIn(em.value.trim(),pw.value);location.href='clientes.html';}
+    catch(err){msg.textContent=AQAuth.message(err,en());}
+    finally{busy=false;}
   });
+  document.getElementById('loginForgot').addEventListener('click',async function(e){
+    e.preventDefault();
+    var em=document.getElementById('loginEmail');
+    if(!em.value||!em.checkValidity()){msg.textContent=en()?'Type your email above and tap "Recover password" again.':'Escribí tu email arriba y volvé a tocar "Recuperar contraseña".';em.focus();return;}
+    if(!window.AQAuth)return;
+    msg.textContent=en()?'Sending…':'Enviando…';
+    try{await AQAuth.recover(em.value.trim(),location.origin+'/clientes.html');
+      msg.textContent=en()?'If the email is registered, we sent you a link to create a new password.':'Si el email está registrado, te enviamos un enlace para crear una nueva contraseña.';}
+    catch(err){msg.textContent=AQAuth.message(err,en());}
+  });
+  /* Si ya hay sesión, el botón pasa a "Mi cuenta" */
+  if(window.AQAuth&&AQAuth.hasSession()){
+    var lbl=opener.querySelector('.login-lbl');
+    lbl.__es='Mi cuenta';lbl.setAttribute('data-en','My account');lbl.innerHTML=en()?'My account':'Mi cuenta';
+    opener.setAttribute('aria-label','Mi cuenta');opener.setAttribute('data-en-aria','My account');opener.__esA='Mi cuenta';
+    opener.removeEventListener('click',open);
+    opener.addEventListener('click',function(){location.href='clientes.html';});
+  }
+  if(/[?&]login=1/.test(location.search))open();
   function ph(l){var x=ov.querySelectorAll('[data-en-ph]');for(var i=0;i<x.length;i++){var n=x[i];if(n.__esPh===undefined)n.__esPh=n.getAttribute('placeholder');n.setAttribute('placeholder',l==='en'?n.getAttribute('data-en-ph'):n.__esPh);}msg.textContent='';}
   if(window.AQ){AQ.on(ph);ph(AQ.lang);}
 })();
