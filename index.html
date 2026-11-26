@@ -499,6 +499,29 @@
   .sector p{font-size:14px;color:var(--accent-2);margin-top:12px;line-height:1.6;}
   @media (max-width:900px){.sectors{grid-template-columns:1fr 1fr;}}
   @media (max-width:560px){.sectors{grid-template-columns:1fr;}.sectors-section{margin-top:64px;padding-top:64px;}.sector{min-height:0;}}
+
+  /* ---------- LOGIN ---------- */
+  .nav-right{display:flex;align-items:center;gap:28px;}
+  .login-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 15px;border:1.5px solid var(--black);border-radius:6px;background:transparent;color:var(--black);font-size:14px;font-weight:600;line-height:1;transition:background .15s,color .15s,border-color .15s;}
+  .login-btn:hover{background:var(--accent);border-color:var(--accent);color:var(--black);}
+  .login-btn svg{width:15px;height:15px;fill:currentColor;}
+  @media (max-width:900px){.menu-toggle{order:3;}.nav-right{margin-left:auto;margin-right:14px;}}
+  @media (max-width:560px){.login-btn{padding:8px 10px;}.login-btn .login-lbl{display:none;}}
+  .login-overlay{position:fixed;inset:0;z-index:210;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(11,3,12,0.6);}
+  .login-overlay.open{display:flex;}
+  .login-box{position:relative;width:100%;max-width:360px;padding:34px 40px 28px;border-radius:8px;background:#ADADAD;color:#fff;font-family:Arial,Helvetica,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.25);}
+  .login-close{position:absolute;top:8px;right:12px;background:none;border:0;color:#fff;font-size:26px;line-height:1;}
+  .login-box h2{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 28px;font-family:Arial,Helvetica,sans-serif;font-size:25px;font-weight:400;color:#fff;}
+  .login-box h2 svg{width:24px;height:24px;fill:#fff;}
+  .login-box label{display:block;margin:0 0 12px;font-size:14px;font-weight:700;letter-spacing:.5px;}
+  .login-box input{display:block;width:100%;margin:0 0 22px;padding:14px 12px;border:1px solid #ccc;border-radius:4px;background:#E8E8E8;color:#333;font-size:15px;font-family:inherit;}
+  .login-box input:focus{outline:2px solid #fff;outline-offset:1px;}
+  .login-submit{display:flex;align-items:center;gap:10px;margin:4px auto 0;padding:12px 18px;border:1px solid #ccc;border-radius:6px;background:#fff;color:#222;font-size:17px;font-family:inherit;}
+  .login-submit:hover{background:#f3f3f3;}
+  .login-submit svg{width:18px;height:18px;fill:#222;}
+  .login-msg{margin:14px 0 0;min-height:1.2em;text-align:center;font-size:14px;}
+  .login-forgot{display:block;margin-top:18px;text-align:center;color:#fff;font-size:15px;}
+  .login-forgot:hover{text-decoration:underline;}
 </style>
 
 
@@ -521,12 +544,15 @@
       </div>
     </div>
     <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú" data-en-aria="Open menu">&#9776;</button>
+    <div class="nav-right">
     <nav class="links" id="navLinks">
       <a href="#inicio" class="active" data-en="Home">Inicio</a>
       <a href="#servicios" data-en="Services">Servicios</a>
       <a href="#insights">Insights</a>
       <a href="#contacto" data-en="Contact">Contacto</a>
     </nav>
+      <button type="button" class="login-btn" id="loginOpen" aria-label="Ingresar" data-en-aria="Log in"><svg viewBox="0 0 448 512" aria-hidden="true"><path d="M224 256a128 128 0 1 0 0-256 128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3 0 498.7 13.3 512 29.7 512h388.6c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304z"/></svg><span class="login-lbl" data-en="Log in">Ingresar</span></button>
+    </div>
   </div>
 </header>
 
@@ -1754,4 +1780,40 @@ header.is-scrolled{box-shadow:0 8px 24px -16px rgba(11,11,13,0.45);background:rg
 })();
 </script>
 
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <button type="button" class="login-close" id="loginClose" aria-label="Cerrar" data-en-aria="Close">&times;</button>
+    <h2 id="loginTitle"><svg viewBox="0 0 448 512" aria-hidden="true"><path d="M224 256a128 128 0 1 0 0-256 128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3 0 498.7 13.3 512 29.7 512h388.6c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304z"/></svg><span data-en="Log in">Iniciar sesión</span></h2>
+    <form id="loginForm" novalidate>
+      <label for="loginEmail">Email</label>
+      <input id="loginEmail" type="email" placeholder="Ingresar correo electrónico" data-en-ph="Enter your email" autocomplete="email" required>
+      <label for="loginPass" data-en="Password">Contraseña</label>
+      <input id="loginPass" type="password" placeholder="Ingresar contraseña" data-en-ph="Enter your password" autocomplete="current-password" required>
+      <button type="submit" class="login-submit"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M217.9 105.9 340.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9-18.7 0-33.9-15.2-33.9-33.9V320H32c-17.7 0-32-14.3-32-32v-64c0-17.7 14.3-32 32-32h128v-62.1c0-18.7 15.2-33.9 33.9-33.9 9 0 17.6 3.6 24 9.9zM352 416h64c17.7 0 32-14.3 32-32V128c0-17.7-14.3-32-32-32h-64c-17.7 0-32-14.3-32-32s14.3-32 32-32h64c53 0 96 43 96 96v256c0 53-43 96-96 96h-64c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg><span data-en="Log in">Ingresar</span></button>
+      <p class="login-msg" id="loginMsg" aria-live="polite"></p>
+    </form>
+    <a class="login-forgot" href="mailto:info@aqsiona.com?subject=Recuperar%20contrase%C3%B1a" data-en="Recover password">Recuperar contraseña</a>
+  </div>
+</div>
+<script>
+(function(){
+  var ov=document.getElementById('loginOverlay'),msg=document.getElementById('loginMsg'),opener=document.getElementById('loginOpen');
+  function en(){return window.AQ&&AQ.lang==='en';}
+  function open(){ov.classList.add('open');msg.textContent='';setTimeout(function(){document.getElementById('loginEmail').focus();},30);}
+  function close(){ov.classList.remove('open');opener.focus();}
+  opener.addEventListener('click',open);
+  document.getElementById('loginClose').addEventListener('click',close);
+  ov.addEventListener('click',function(e){if(e.target===ov)close();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov.classList.contains('open'))close();});
+  document.getElementById('loginForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    var em=document.getElementById('loginEmail'),pw=document.getElementById('loginPass');
+    if(!em.value||!em.checkValidity()||!pw.value){msg.textContent=en()?'Please enter a valid email and your password.':'Ingresá un email válido y tu contraseña.';return;}
+    /* Provisorio: el sitio es estático. Acá se conectará el servicio de cuentas. */
+    msg.textContent=en()?'The client area will be available soon.':'El área de clientes estará disponible próximamente.';
+  });
+  function ph(l){var x=ov.querySelectorAll('[data-en-ph]');for(var i=0;i<x.length;i++){var n=x[i];if(n.__esPh===undefined)n.__esPh=n.getAttribute('placeholder');n.setAttribute('placeholder',l==='en'?n.getAttribute('data-en-ph'):n.__esPh);}msg.textContent='';}
+  if(window.AQ){AQ.on(ph);ph(AQ.lang);}
+})();
+</script>
 </body></html>
