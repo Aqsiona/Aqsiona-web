@@ -47,7 +47,10 @@ window.AQAuth = (function () {
     if (c === 'weak_password') return en ? 'The password is too weak. Use at least 8 characters.' : 'La contraseña es muy débil. Usá al menos 8 caracteres.';
     if (c === 'same_password') return en ? 'The new password must be different from the previous one.' : 'La nueva contraseña tiene que ser distinta de la anterior.';
     if (st === 429 || c === 'over_request_rate_limit' || c === 'over_email_send_rate_limit') return en ? 'Too many attempts. Please try again in a few minutes.' : 'Demasiados intentos. Probá de nuevo en unos minutos.';
-    return en ? 'Something went wrong. Please try again.' : 'Algo salió mal. Probá de nuevo.';
+    if (c === 'email_provider_disabled' || c === 'provider_disabled') return en ? 'Email sign-in is disabled.' : 'El ingreso con email está desactivado en Supabase.';
+    if (st === 401 || /api key/i.test(err && err.message || '')) return en ? 'Configuration error (API key).' : 'Error de configuración (clave de API).';
+    var det = [st, c || (err && err.message)].filter(Boolean).join(' · ');
+    return (en ? 'Something went wrong. Please try again.' : 'Algo salió mal. Probá de nuevo.') + (det ? ' [' + det + ']' : '');
   }
 
   return {
